@@ -1,0 +1,74 @@
+<!-- Copyright 2019 The Android Open Source Project
+
+    Licensed under the Apache License, Version 2.0 (the "License");
+    you may not use this file except in compliance with the License.
+    You may obtain a copy of the License at
+
+        http://www.apache.org/licenses/LICENSE-2.0
+
+    Unless required by applicable law or agreed to in writing, software
+    distributed under the License is distributed on an "AS IS" BASIS,
+    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+    See the License for the specific language governing permissions and
+    limitations under the License.
+-->
+
+<!--
+Set association name and thermal zone index (/sys/class/thermal_zoneX/...).
+    CPUX (with X to be replaced by the digit)
+    GPU
+    BATTERY
+    SKIN
+
+Thermal zone index and type to be set as parameter
+For development phase purpose, a stub value can be returned (use fixed values)
+
+Trip values can be set directly within this file or give information on how to read them
+
+-->
+
+<thermalhal>
+<!--
+  A generic SoC temperature sensor is available, same value given for both CPUs and GPU
+  Trip values are read from the kernel (set in the device tree).
+-->
+
+<!--
+  WARNING: must be started by CPUx configurations
+-->
+    <device name="CPU0" type="cpu-thermal" index="0" stub="0">
+        <throttling threshold="0" shutdown="0" threshold_vr_min="0">
+            <trip trip_name="threshold" trip_type="passive" trip_index="0"></trip>
+            <trip trip_name="shutdown" trip_type="critical" trip_index="1"></trip>
+        </throttling>
+    </device>
+
+    <device name="CPU1" type="cpu-thermal" index="0" stub="0">
+        <throttling threshold="0" shutdown="0" threshold_vr_min="0">
+            <trip trip_name="threshold" trip_type="passive" trip_index="0"></trip>
+            <trip trip_name="shutdown" trip_type="critical" trip_index="1"></trip>
+        </throttling>
+    </device>
+
+    <device name="GPU" type="cpu-thermal" index="0" stub="0">
+        <throttling threshold="0" shutdown="0" threshold_vr_min="0">
+            <trip trip_name="threshold" trip_type="passive" trip_index="0"></trip>
+            <trip trip_name="shutdown" trip_type="critical" trip_index="1"></trip>
+        </throttling>
+    </device>
+
+<!--
+  A battery with temperature but not Trip information (set them within this file instead)
+-->
+    <device name="BATTERY" type="dummy-battery" index="1" stub="0">
+        <throttling threshold="85" shutdown="120" threshold_vr_min="85"></throttling>
+    </device>
+
+<!--
+  Case stub enable, Trip values are given (threshold value is used as current temperature)
+-->
+    <device name="SKIN" type="stm32-skin-temp" index="2" stub="1">
+        <throttling threshold="40" shutdown="55" threshold_vr_min="55"></throttling>
+    </device>
+
+</thermalhal>
