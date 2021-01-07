@@ -13,37 +13,50 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#define LOG_TAG "android.hardware.thermal@1.1-service.stm32mp1"
+#define LOG_TAG "android.hardware.thermal@2.0-service.stm32mp1"
 
 #include <android-base/logging.h>
-#include <hidl/HidlSupport.h>
 #include <hidl/HidlTransportSupport.h>
-
 #include "Thermal.h"
 
-using ::android::hardware::configureRpcThreadpool;
-using ::android::hardware::thermal::V1_1::IThermal;
-using ::android::hardware::thermal::V1_1::implementation::Thermal;
-using ::android::hardware::joinRpcThreadpool;
 using ::android::OK;
-using ::android::sp;
+using ::android::status_t;
 
-int main(int /* argc */, char* /* argv */ []) {
+// libhwbinder:
+using ::android::hardware::configureRpcThreadpool;
+using ::android::hardware::joinRpcThreadpool;
 
-    sp<IThermal> thermal = new Thermal();
-    if (thermal == nullptr) {
-        LOG(ERROR) << "Can not create an instance of Thermal hardware Iface, exiting.";
-        goto shutdown;
-    }
+// Generated HIDL files:
+using ::android::hardware::thermal::V2_0::IThermal;
+using ::android::hardware::thermal::V2_0::implementation::Thermal;
 
-    configureRpcThreadpool(1, true /* will join */);
-    if (thermal->registerAsService() != OK) {
-        LOG(ERROR) << "Could not register Thermal service.";
-        goto shutdown;
-    }
-    joinRpcThreadpool();
-
-shutdown:
-    LOG(ERROR) << "Thermal service is shutting down";
+static int shutdown() {
+    LOG(ERROR) << "Thermal Service is shutting down.";
     return 1;
+}
+
+int main(int /* argc */, char** /* argv */) {
+    status_t status;
+    android::sp<IThermal> service = nullptr;
+
+    LOG(INFO) << "Thermal HAL Service Mock 2.0 starting...";
+
+    service = new Thermal();
+    if (service == nullptr) {
+        LOG(ERROR) << "Error creating an instance of ThermalHAL.  Exiting...";
+        return shutdown();
+    }
+
+    configureRpcThreadpool(1, true /* callerWillJoin */);
+
+    status = service->registerAsService();
+    if (status != OK) {
+        LOG(ERROR) << "Could not register service for ThermalHAL (" << status << ")";
+        return shutdown();
+    }
+
+    LOG(INFO) << "Thermal Service started successfully.";
+    joinRpcThreadpool();
+    // We should not get past the joinRpcThreadpool().
+    return shutdown();
 }

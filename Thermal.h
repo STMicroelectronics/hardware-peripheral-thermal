@@ -13,56 +13,81 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ANDROID_HARDWARE_THERMAL_V1_1_WAHOO_THERMAL_H
-#define ANDROID_HARDWARE_THERMAL_V1_1_WAHOO_THERMAL_H
+#ifndef ANDROID_HARDWARE_THERMAL_V2_0_STM32MP1_THERMAL_H
+#define ANDROID_HARDWARE_THERMAL_V2_0_STM32MP1_THERMAL_H
 
-#include <android/hardware/thermal/1.1/IThermal.h>
-#include <android/hardware/thermal/1.1/IThermalCallback.h>
+#include <android/hardware/thermal/2.0/IThermal.h>
 #include <hidl/Status.h>
 #include <hidl/MQDescriptor.h>
 
 namespace android {
 namespace hardware {
 namespace thermal {
-namespace V1_1 {
+namespace V2_0 {
 namespace implementation {
 
-using ::android::hardware::thermal::V1_0::CoolingDevice;
-using ::android::hardware::thermal::V1_0::CpuUsage;
-using ::android::hardware::thermal::V1_0::Temperature;
-using ::android::hardware::thermal::V1_0::ThermalStatus;
-using ::android::hardware::thermal::V1_0::ThermalStatusCode;
-using ::android::hardware::thermal::V1_1::IThermal;
-using ::android::hardware::thermal::V1_1::IThermalCallback;
+using ::android::sp;
+using ::android::hardware::hidl_array;
+using ::android::hardware::hidl_memory;
+using ::android::hardware::hidl_string;
+using ::android::hardware::hidl_vec;
 using ::android::hardware::Return;
 using ::android::hardware::Void;
-using ::android::hardware::hidl_vec;
-using ::android::hardware::hidl_string;
-using ::android::hardware::hidl_death_recipient;
-using ::android::hidl::base::V1_0::IBase;
-using ::android::sp;
+using ::android::hardware::thermal::V1_0::CpuUsage;
+using ::android::hardware::thermal::V2_0::IThermal;
+using CoolingDevice_1_0 = ::android::hardware::thermal::V1_0::CoolingDevice;
+using CoolingType_1_0 = ::android::hardware::thermal::V1_0::CoolingType;
+using Temperature_1_0 = ::android::hardware::thermal::V1_0::Temperature;
+using CoolingDevice_2_0 = ::android::hardware::thermal::V2_0::CoolingDevice;
+using CoolingType_2_0 = ::android::hardware::thermal::V2_0::CoolingType;
+using Temperature_2_0 = ::android::hardware::thermal::V2_0::Temperature;
+using ::android::hardware::thermal::V2_0::IThermalChangedCallback;
+using ::android::hardware::thermal::V2_0::TemperatureThreshold;
+using ::android::hardware::thermal::V2_0::TemperatureType;
+
+struct CallbackSetting {
+    CallbackSetting(sp<IThermalChangedCallback> callback, bool is_filter_type, TemperatureType type)
+        : callback(callback), is_filter_type(is_filter_type), type(type) {}
+    sp<IThermalChangedCallback> callback;
+    bool is_filter_type;
+    TemperatureType type;
+};
 
 struct Thermal : public IThermal {
-    // Local functions used internally by thermal-engine follow.
-    std::string getSkinSensorType();
-    void notifyThrottling(bool isThrottling, const Temperature& temperature);
+    // Local functions
     Thermal();
+    void notifyThrottling(const Temperature& temperature);
+
     // Methods from ::android::hardware::thermal::V1_0::IThermal follow.
-    Return<void> getTemperatures(getTemperatures_cb _hidl_cb)  override;
-    Return<void> getCpuUsages(getCpuUsages_cb _hidl_cb)  override;
-    Return<void> getCoolingDevices(getCoolingDevices_cb _hidl_cb)  override;
-    // Methods from ::android::hardware::thermal::V1_1::IThermal follow.
-    Return<void> registerThermalCallback(
-        const sp<IThermalCallback>& callback) override;
+    Return<void> getTemperatures(getTemperatures_cb _hidl_cb) override;
+    Return<void> getCpuUsages(getCpuUsages_cb _hidl_cb) override;
+    Return<void> getCoolingDevices(getCoolingDevices_cb _hidl_cb) override;
+
+    // Methods from ::android::hardware::thermal::V2_0::IThermal follow.
+    Return<void> getCurrentTemperatures(bool filterType, TemperatureType type,
+                                        getCurrentTemperatures_cb _hidl_cb) override;
+    Return<void> getTemperatureThresholds(bool filterType, TemperatureType type,
+                                          getTemperatureThresholds_cb _hidl_cb) override;
+    Return<void> registerThermalChangedCallback(
+        const sp<IThermalChangedCallback>& callback, bool filterType, TemperatureType type,
+        registerThermalChangedCallback_cb _hidl_cb) override;
+    Return<void> unregisterThermalChangedCallback(
+        const sp<IThermalChangedCallback>& callback,
+        unregisterThermalChangedCallback_cb _hidl_cb) override;
+    Return<void> getCurrentCoolingDevices(bool filterType, CoolingType_2_0 type,
+                                          getCurrentCoolingDevices_cb _hidl_cb) override;
 
   private:
-    bool enabled;
+    bool enabled_;
+    std::mutex thermal_callback_mutex_;
+    std::vector<CallbackSetting> callbacks_;
+
 };
 
 }  // namespace implementation
-}  // namespace V1_1
+}  // namespace V2_0
 }  // namespace thermal
 }  // namespace hardware
 }  // namespace android
 
-#endif  // ANDROID_HARDWARE_THERMAL_V1_1_WAHOO_THERMAL_H
+#endif  // ANDROID_HARDWARE_THERMAL_V2_0_STM32MP1_THERMAL_H

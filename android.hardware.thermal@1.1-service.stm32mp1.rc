@@ -1,4 +1,0 @@
-service thermal-1-1 /vendor/bin/hw/android.hardware.thermal@1.1-service.stm32mp1
-    class hal
-    user system
-    group system

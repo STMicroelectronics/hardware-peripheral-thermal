@@ -12,27 +12,15 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-cc_library_shared {
-    name: "libthermalconfig",
-    cflags: ["-Werror"],
-    include_dirs: ["external/expat/lib"],
-    srcs: ["thermal-config.c"],
-    proprietary: true,
-    shared_libs: [
-        "libcutils",
-        "libutils",
-        "libdl",
-        "liblog",
-        "libexpat",
-    ],
-}
-
 cc_binary {
-    name: "android.hardware.thermal@1.1-service.stm32mp1",
-    init_rc: ["android.hardware.thermal@1.1-service.stm32mp1.rc"],
+    name: "android.hardware.thermal@2.0-service.stm32mp1",
+    defaults: ["hidl_defaults"],
 
     relative_install_path: "hw",
-    proprietary: true,
+    vendor: true,
+
+    init_rc: ["android.hardware.thermal@2.0-service.stm32mp1.rc"],
+    vintf_fragments: ["android.hardware.thermal@2.0-service.stm32mp1.xml"],
 
     srcs: [
         "service.cpp",
@@ -43,11 +31,8 @@ cc_binary {
     shared_libs: [
         "libbase",
         "libhidlbase",
-        "libhidltransport",
         "libutils",
-        "liblog",
-        "libthermalconfig",
+        "android.hardware.thermal@2.0",
         "android.hardware.thermal@1.0",
-        "android.hardware.thermal@1.1",
     ],
 }

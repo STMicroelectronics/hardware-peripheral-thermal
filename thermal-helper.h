@@ -30,46 +30,90 @@
 #ifndef __THERMAL_HELPER_H__
 #define __THERMAL_HELPER_H__
 
-#include <android/hardware/thermal/1.1/IThermal.h>
+#include <android/hardware/thermal/2.0/IThermal.h>
 
 namespace android {
 namespace hardware {
 namespace thermal {
-namespace V1_1 {
+namespace V2_0 {
 namespace implementation {
 
 using ::android::hardware::thermal::V1_0::CpuUsage;
-using ::android::hardware::thermal::V1_0::Temperature;
+using CoolingDevice_1_0 = ::android::hardware::thermal::V1_0::CoolingDevice;
+using CoolingType_1_0 = ::android::hardware::thermal::V1_0::CoolingType;
+using Temperature_1_0 = ::android::hardware::thermal::V1_0::Temperature;
 
+using CoolingDevice_2_0 = ::android::hardware::thermal::V2_0::CoolingDevice;
+using CoolingType_2_0 = ::android::hardware::thermal::V2_0::CoolingType;
+using Temperature_2_0 = ::android::hardware::thermal::V2_0::Temperature;
+
+
+
+// Maximum number of sensors treated
+constexpr unsigned int kCpuNum = 2;
+constexpr unsigned int kTemperatureNum = 3 + kCpuNum;
+
+// Maximum number of cooling devices treated
+constexpr unsigned int kCoolingNum_2_0 = 2;
+
+// Path to get back CPU usage data
 constexpr const char *kCpuUsageFile = "/proc/stat";
 constexpr const char *kCpuOnlineFileFormat = "/sys/devices/system/cpu/cpu%d/online";
 
-// Path to get back thermal zone temperature
-constexpr const char *kTemperatureFileFormat = "/sys/class/thermal/thermal_zone%d/temp";
-// Path to get back trip points information (threshold = passive, shutdown = critical)
-constexpr const char *kTripTempFileFormat = "/sys/class/thermal/thermal_zone%d/trip_point_%d_temp";
+// Path to get back thermal zone data
+constexpr const char *kThermalZoneTypeFileFormat = "/sys/class/thermal/thermal_zone%d/type";
+constexpr const char *kThermalZoneTempFileFormat = "/sys/class/thermal/thermal_zone%d/temp";
+
+// Path to get back trip point information
 constexpr const char *kTripTypeFileFormat = "/sys/class/thermal/thermal_zone%d/trip_point_%d_type";
+constexpr const char *kTripTempFileFormat = "/sys/class/thermal/thermal_zone%d/trip_point_%d_temp";
 
-constexpr unsigned int kBatterySensorNum = 0;
+// Path to get back cooling device data
+constexpr const char *kCoolingDeviceTypeFileFormat = "/sys/class/thermal/cooling_device%d/type";
+constexpr const char *kCoolingDeviceCurStateFileFormat = "/sys/class/thermal/cooling_device%d/cur_state";
+constexpr const char *kCoolingDeviceMaxStateFileFormat = "/sys/class/thermal/cooling_device%d/max_state";
 
-constexpr unsigned int kGpuTsensOffset = 0;
-constexpr unsigned int kCpuNum = 2;
+// Used to get information on scanned thermal zone
+constexpr unsigned int kMaxThermalZones = 3;
+constexpr unsigned int kMaxThermalTrip = 3;
 
-constexpr const char *kGpuLabel = "GPU";
-constexpr const char *kBatteryLabel = "BATTERY";
-constexpr const char *kSkinLabel = "SKIN";
-constexpr const char *kCpuLabel[kCpuNum] = {"CPU0", "CPU1"};
-constexpr int kCpuTsensOffset[kCpuNum] = {0, 0};
+struct thermal_trip_t {
+    int             nb_trip;
+    char            trip_type[kMaxThermalTrip][32];
+};
 
-// Sum of kCpuNum + 3 for BATTERY, GPU and SKIN.
-constexpr unsigned int kTemperatureNum = 2 + kCpuNum;
+struct thermal_zone_t {
+    int             nb_zone;
+    char            zone_type[kMaxThermalZones][32];
+    thermal_trip_t  trip[kMaxThermalZones];
+};
+
+// Used to get information on scanned cooling device
+constexpr unsigned int kMaxCoolingDevices = 3;
+
+struct cooling_device_t {
+    int             nb_cooling;
+    char            cooling_type[kMaxCoolingDevices][32];
+};
 
 bool initThermal();
-ssize_t fillTemperatures(hidl_vec<Temperature> *temperatures);
-ssize_t fillCpuUsages(hidl_vec<CpuUsage> *cpuUsages);
+
+ssize_t fillTemperatures_1_0(std::vector<Temperature_1_0> *temperatures);
+ssize_t fillCoolingDevices_1_0(std::vector<CoolingDevice_1_0> *cooling);
+
+ssize_t fillTemperatures_2_0(std::vector<Temperature_2_0> *temperatures);
+ssize_t fillTemperature_2_0(std::vector<Temperature_2_0> *temperatures, TemperatureType type);
+
+ssize_t fillTemperaturesThreshold(std::vector<TemperatureThreshold> *temperature_thresholds);
+ssize_t fillTemperatureThreshold(std::vector<TemperatureThreshold> *temperature_thresholds, TemperatureType type);
+
+ssize_t fillCoolingDevices_2_0(std::vector<CoolingDevice_2_0> *cooling);
+ssize_t fillCoolingDevice_2_0(std::vector<CoolingDevice_2_0> *cooling, CoolingType_2_0 type);
+
+ssize_t fillCpuUsages(std::vector<CpuUsage> *cpuUsages);
 
 }  // namespace implementation
-}  // namespace V1_1
+}  // namespace V2_0
 }  // namespace thermal
 }  // namespace hardware
 }  // namespace android
