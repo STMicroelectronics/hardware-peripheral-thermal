@@ -12,15 +12,30 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+package {
+    default_applicable_licenses: ["hardware_thermal_license"],
+}
+
+license {
+    name: "hardware_thermal_license",
+    visibility: [":__subpackages__"],
+    license_kinds: [
+        "SPDX-license-identifier-Apache-2.0",
+    ],
+    license_text: [
+        "LICENSE",
+    ],
+}
+
 cc_binary {
-    name: "android.hardware.thermal@2.0-service.stm32mp1",
+    name: "android.hardware.thermal@2.0-service.stm32mpu",
     defaults: ["hidl_defaults"],
 
     relative_install_path: "hw",
     vendor: true,
 
-    init_rc: ["android.hardware.thermal@2.0-service.stm32mp1.rc"],
-    vintf_fragments: ["android.hardware.thermal@2.0-service.stm32mp1.xml"],
+    init_rc: ["android.hardware.thermal@2.0-service.stm32mpu.rc"],
+    vintf_fragments: ["android.hardware.thermal@2.0-service.stm32mpu.xml"],
 
     srcs: [
         "service.cpp",

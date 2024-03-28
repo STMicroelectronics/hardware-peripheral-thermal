@@ -1,24 +1,18 @@
 # hardware-thermal #
 
-This module contains the STMicroelectronics Thermal hardware service source code.
-It is part of the STMicroelectronics delivery for Android (see the [delivery][] for more information).
+This module contains the STMicroelectronics android.hardware.thermal binary source code.
 
-[delivery]: https://wiki.st.com/stm32mpu/wiki/STM32MP15_distribution_for_Android_release_note_-_v2.0.0
+It is part of the STMicroelectronics delivery for Android.
 
 ## Description ##
 
-This module version is the updated version for STM32MP15 distribution for Android V2.0
+This module implements android.hardware.thermal HIDL version 2.
 Please see the Android delivery release notes for more details.
-
-It is based on the Module Thermal API version 2.0.
 
 ## Documentation ##
 
 * The [release notes][] provide information on the release.
-* The [distribution package][] provides detailed information on how to use this delivery.
-
-[release notes]: https://wiki.st.com/stm32mpu/wiki/STM32MP15_distribution_for_Android_release_note_-_v2.0.0
-[distribution package]: https://wiki.st.com/stm32mpu/wiki/STM32MP1_Distribution_Package_for_Android
+[release notes]: https://wiki.st.com/stm32mpu/wiki/STM32_MPU_OpenSTDroid_release_note_-_v5.1.0
 
 ## Dependencies ##
 
@@ -26,12 +20,12 @@ This module can't be used alone. It is part of the STMicroelectronics delivery f
 To be able to use it the device.mk must have the following packages:
 ```
 PRODUCT_PACKAGES += \
-    android.hardware.thermal@2.0-service.stm32mp1
+    android.hardware.thermal@2.0-service.stm32mpu
 ```
 
 ## Containing ##
 
-This directory contains the sources and associated Android makefile to generate the android.hardware.thermal@2.0-service.stm32mp1 binary.
+This directory contains the sources and associated Android makefile to generate the thermal binary.
 
 ## License ##
 

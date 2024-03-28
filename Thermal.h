@@ -13,8 +13,8 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#ifndef ANDROID_HARDWARE_THERMAL_V2_0_STM32MP1_THERMAL_H
-#define ANDROID_HARDWARE_THERMAL_V2_0_STM32MP1_THERMAL_H
+#ifndef ANDROID_HARDWARE_THERMAL_V2_0_STM32MPU_THERMAL_H
+#define ANDROID_HARDWARE_THERMAL_V2_0_STM32MPU_THERMAL_H
 
 #include <android/hardware/thermal/2.0/IThermal.h>
 #include <hidl/Status.h>
@@ -90,4 +90,4 @@ struct Thermal : public IThermal {
 }  // namespace hardware
 }  // namespace android
 
-#endif  // ANDROID_HARDWARE_THERMAL_V2_0_STM32MP1_THERMAL_H
+#endif  // ANDROID_HARDWARE_THERMAL_V2_0_STM32MPU_THERMAL_H

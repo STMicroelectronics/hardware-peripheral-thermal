@@ -61,7 +61,7 @@ constexpr const TemperatureType kTemperatureType[kTemperatureNum] =
 
 // Kernel thermal zone type associated with temperature names (none = no driver)
 constexpr const char *kThermalZoneType[kTemperatureNum] = 
-    {"cpu-thermal", "cpu-thermal", "cpu-thermal", "dummy-battery", "none"};
+    {"cpu0-thermal", "cpu1-thermal", "cpu0-thermal", "dummy-battery", "none"};
 
 // Temperature threshold associated with temperature names
 static int gThermalThresholdSize = 0;

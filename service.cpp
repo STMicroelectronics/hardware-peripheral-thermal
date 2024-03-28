@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-#define LOG_TAG "android.hardware.thermal@2.0-service.stm32mp1"
+#define LOG_TAG "android.hardware.thermal@2.0-service.stm32mpu"
 
 #include <android-base/logging.h>
 #include <hidl/HidlTransportSupport.h>
